@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/assets/logos/himaide-logo.svg" alt="HIMAIDE" width="80" />
+</p>
+
 # HIMAIDE Admin Hub
 
 **Pusat Informasi Administrasi HIMAIDE ITS**
