@@ -80,9 +80,11 @@ export const PROKER: CardData[] = [
       <div class="warn-box"><span class="wi">⚠️</span> Pengajuan dapat diproses setelah proposal ditandatangani Kepala Departemen.</div>
       <h4>Alur Pengajuan</h4>
       <div class="steps">
-        <div class="step"><div class="step-left"><div class="step-dot">1</div><div class="step-line"></div></div><div class="step-content"><div class="step-time">Cari</div><div class="step-text">Temukan konsumsi di <b style="color:var(--txt)">myITS Food</b> (itsfood.id)</div></div></div>
-        <div class="step"><div class="step-left"><div class="step-dot">2</div><div class="step-line"></div></div><div class="step-content"><div class="step-time">H-10</div><div class="step-text">Ajukan ke Tendik (Mba Faza) dengan format yang ditentukan</div></div></div>
-        <div class="step"><div class="step-left"><div class="step-dot">✓</div></div><div class="step-content"><div class="step-time">Selesai</div><div class="step-text">Konsumsi diproses oleh Tendik</div></div></div>
+        <div class="step"><div class="step-left"><div class="step-dot">1</div><div class="step-line"></div></div><div class="step-content"><div class="step-time">Copy Format</div><div class="step-text">Klik tombol Copy Format, lalu paste ke notes atau WhatsApp.</div></div></div>
+        <div class="step"><div class="step-left"><div class="step-dot">2</div><div class="step-line"></div></div><div class="step-content"><div class="step-time">Cari Konsumsi</div><div class="step-text">Buka <a href="https://itsfood.id" target="https://itsfood.id" rel="noopener noreferrer" style="color:var(--accent)">myITS Food</a>, lalu pilih konsumsi yang dibutuhkan.</div></div></div>
+        <div class="step"><div class="step-left"><div class="step-dot">3</div><div class="step-line"></div></div><div class="step-content"><div class="step-time">Lengkapi Format</div><div class="step-text">Isi format pengajuan sesuai konsumsi yang dipilih, jumlah kebutuhan, waktu, lokasi, dan detail kegiatan.</div></div></div>
+        <div class="step"><div class="step-left"><div class="step-dot">4</div><div class="step-line"></div></div><div class="step-content"><div class="step-time">Ajukan H-10</div><div class="step-text">Kirim pengajuan ke Tendik Mba Faza maksimal H-10 sebelum kegiatan.</div></div></div>
+        <div class="step"><div class="step-left"><div class="step-dot">✓</div></div><div class="step-content"><div class="step-time">Selesai</div><div class="step-text">Pengajuan akan diproses oleh Mba Faza melalui web myITS Food.</div></div></div>
       </div>
       <h4>Ketentuan</h4>
       <ul>
