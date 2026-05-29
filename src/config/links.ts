@@ -6,7 +6,7 @@ export const links = {
   sistemNotulensi: 'https://its.id/m/himaide_notula',
 
   // Document links
-  templateProposal: 'https://docs.google.com/document/d/1X1F0Fh4O7nN2O4W1V79xX3c9V_H0Lq3rD9r8n8n8n8n/template/preview',
+  templateProposal: 'https://docs.google.com/document/d/12DT0Z6piYRe4Vnj8LBvffC8S2f4ErRCKQ-BYd8Bl7Y0/template/preview',
   contohProposal: 'https://docs.google.com/document/d/1EdNJkymbwiX_uU9vpDX8t-E6-YAtV5pscJyoAx_mTos/preview',
   templateLPJ: 'https://docs.google.com/document/d/1nC5MiSXYYyl6an6LhVdDEc30ZPB1GrFGTrc874mX4XE/template/preview',
   templateSPJ: 'https://docs.google.com/document/d/1iLRoNwgvnvl7XdcS5U-_LLuf3xTsvZgf3-KV1C29044/template/preview',
