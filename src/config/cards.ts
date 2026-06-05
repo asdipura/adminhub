@@ -325,7 +325,7 @@ export const FUNGSIO: CardData[] = [
       <div class="warn-box"><span class="wi">⚠️</span> Denda keterlambatan: <b style="color:#fbbf24">Rp20.000 / minggu</b></div>
       <h4>SAKU IDE (Iuran Anggota)</h4>
       <ul>
-        <li>Wajib <b style="color:var(--txt)">Rp85.000</b> per anggota per periode</li>
+        <li>Wajib <b style="color:var(--txt)">Rp90.000</b> per anggota per periode</li>
         <li>Bisa dicicil sesuai kemampuan</li>
         <li>Batas pembayaran: <b style="color:var(--txt)">November 2026</b></li>
         <li>Pembayaran hanya melalui transfer</li>
@@ -333,7 +333,7 @@ export const FUNGSIO: CardData[] = [
       </ul>`,
     btns: [
       { label: '💬 Hubungi Bendahara', cls: 'mf-wa', url: 'https://wa.me/6208977406276' },
-      { label: '💳 Bayar Sekarang', cls: 'mf-primary', url: links.bayarKas || '#' },
+      { label: '💳 Bayar Sekarang', cls: 'mf-primary', url: links.bayarKas || 'https://docs.google.com/forms/d/e/1FAIpQLSdoxpJuYlXtyhT0kQOGqhDVxCa6tXVuA3qndmdyrupawJEqRw/viewform' },
     ],
   },
   {
