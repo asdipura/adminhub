@@ -1,6 +1,6 @@
 export const links = {
   // Sistem links — found in HTML footer
-  sistemSuratKeluar: 'https://its.id/m/himaide_suratkeluar',
+  sistemSuratKeluar: '/surat-keluar', // form internal adminhub (GAS lama: https://its.id/m/himaide_suratkeluar)
   sistemSertifikat: 'https://its.id/m/himaide_sertif',
   sistemZoom: 'https://its.id/m/himaide_zoom',
   sistemNotulensi: 'https://its.id/m/himaide_notula',

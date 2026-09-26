@@ -1,21 +1,26 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { PageId } from '@/types/config'
 import { documents } from '@/config/documents'
 
 interface NavbarProps {
-  activePage: PageId
-  setActivePage: (page: PageId) => void
+  /** Kosongkan di halaman selain `/` (mis. /surat-keluar) — tidak ada item aktif. */
+  activePage?: PageId
+  /** Kosongkan di halaman selain `/` — navigasi diarahkan ke `/?p=<page>`. */
+  setActivePage?: (page: PageId) => void
 }
 
 
 export default function Navbar({ activePage, setActivePage }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const router = useRouter()
 
   function handleNav(page: PageId) {
-    setActivePage(page)
     setMobileOpen(false)
+    if (setActivePage) setActivePage(page)
+    else router.push(page === 'home' ? '/' : `/?p=${page}`)
   }
 
   return (

@@ -1,16 +1,28 @@
 'use client'
 
+import { usePathname, useRouter } from 'next/navigation'
 import { documents } from '@/config/documents'
 import { socials } from '@/config/socials'
 import { links } from '@/config/links'
 
-function openCardModal(e: React.MouseEvent, cardId: string) {
-  e.preventDefault()
-  window.dispatchEvent(new CustomEvent('himaide:opencard', { detail: cardId }))
+/** Link internal (/surat-keluar) buka di tab yang sama; link luar di tab baru. */
+function extProps(href: string) {
+  return href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {}
 }
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  function openCardModal(e: React.MouseEvent, cardId: string) {
+    e.preventDefault()
+    if (pathname === '/') {
+      window.dispatchEvent(new CustomEvent('himaide:opencard', { detail: cardId }))
+    } else {
+      router.push(`/?card=${cardId}`)
+    }
+  }
 
   return (
     <footer className="ft">
@@ -29,8 +41,8 @@ export default function Footer() {
             <h4>Sistem</h4>
             <ul>
               <li>
-                <a href={links.sistemSuratKeluar || '#'} target="_blank" rel="noopener">
-                  Surat Keluar<span className="x">↗</span>
+                <a href={links.sistemSuratKeluar || '#'} {...extProps(links.sistemSuratKeluar)}>
+                  Surat Keluar{links.sistemSuratKeluar.startsWith('http') && <span className="x">↗</span>}
                 </a>
               </li>
               <li>

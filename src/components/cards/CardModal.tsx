@@ -75,8 +75,8 @@ export default function CardModal({ card, onClose }: CardModalProps) {
                 key={idx}
                 href={btn.url || '#'}
                 className={btn.cls}
-                target={btn.url && btn.url !== '#' ? '_blank' : undefined}
-                rel={btn.url && btn.url !== '#' ? 'noopener noreferrer' : undefined}
+                target={btn.url?.startsWith('http') ? '_blank' : undefined}
+                rel={btn.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
               >
                 {btn.label}
               </a>

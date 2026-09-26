@@ -48,7 +48,7 @@ export const PROKER: CardData[] = [
         <div class="step"><div class="step-left"><div class="step-dot">✓</div></div><div class="step-content"><div class="step-time">Selesai</div><div class="step-text">Surat siap digunakan</div></div></div>
       </div>`,
     btns: [
-      { label: '📤 Ajukan Surat Keluar', cls: 'mf-primary', url: 'https://its.id/m/himaide_suratkeluar' },
+      { label: '📤 Ajukan Surat Keluar', cls: 'mf-primary', url: links.sistemSuratKeluar },
       { label: '💬 WA Sekretaris', cls: 'mf-wa', url: 'https://wa.me/6281280126505' },
     ],
   },
@@ -232,7 +232,7 @@ export const FUNGSIO: CardData[] = [
     tl: 'Sesuai Kebutuhan',
     body: `<p>Ajukan surat keluar sesuai kebutuhan administrasi kegiatan melalui link pengajuan resmi yang tersedia.</p>`,
     btns: [
-      { label: '📤 Ajukan Surat Keluar', cls: 'mf-primary', url: 'https://its.id/m/himaide_suratkeluar' },
+      { label: '📤 Ajukan Surat Keluar', cls: 'mf-primary', url: links.sistemSuratKeluar },
     ],
   },
   {
