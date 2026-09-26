@@ -10,11 +10,14 @@ interface ReviewModalProps {
   pemohon: PemohonState
   sending: boolean
   error: string
+  /** Submit mungkin sudah tersimpan walau balasannya gagal — arahkan cek Lacak dulu */
+  uncertain: boolean
   onClose: () => void
   onSubmit: () => void
+  onLacak: () => void
 }
 
-export default function ReviewModal({ data, pemohon, sending, error, onClose, onSubmit }: ReviewModalProps) {
+export default function ReviewModal({ data, pemohon, sending, error, uncertain, onClose, onSubmit, onLacak }: ReviewModalProps) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -73,10 +76,21 @@ export default function ReviewModal({ data, pemohon, sending, error, onClose, on
         </div>
 
         <div className="m-foot">
-          <button type="button" className="mf-secondary" onClick={onClose} disabled={sending}>← Edit lagi</button>
-          <button type="button" className="mf-primary" onClick={onSubmit} disabled={sending}>
-            {sending ? <><span className="sk-spin" aria-hidden="true" /> Mengirim…</> : 'Kirim request'}
-          </button>
+          {uncertain ? (
+            <>
+              <button type="button" className="mf-secondary" onClick={onSubmit} disabled={sending}>
+                {sending ? <><span className="sk-spin" aria-hidden="true" /> Mengirim…</> : 'Kirim ulang'}
+              </button>
+              <button type="button" className="mf-primary" onClick={onLacak} disabled={sending}>Cek di Lacak Status</button>
+            </>
+          ) : (
+            <>
+              <button type="button" className="mf-secondary" onClick={onClose} disabled={sending}>← Edit lagi</button>
+              <button type="button" className="mf-primary" onClick={onSubmit} disabled={sending}>
+                {sending ? <><span className="sk-spin" aria-hidden="true" /> Mengirim…</> : 'Kirim request'}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

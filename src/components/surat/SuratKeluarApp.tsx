@@ -70,7 +70,12 @@ export default function SuratKeluarApp() {
         </div>
 
         <div className="sk-body">
-          {tab === 'request' && !kodeTiket && <SuratKeluarForm key={formKey} onDone={onDone} />}
+          {/* Tetap ter-mount saat pindah tab supaya isian tidak hilang */}
+          {!kodeTiket && (
+            <div hidden={tab !== 'request'}>
+              <SuratKeluarForm key={formKey} onDone={onDone} onLacak={(q) => { setLacakQuery(q); switchTab('lacak') }} />
+            </div>
+          )}
 
           {tab === 'request' && kodeTiket && (
             <div className="fm-card sk-success">

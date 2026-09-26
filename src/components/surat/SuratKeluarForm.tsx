@@ -21,9 +21,11 @@ function todayISO() {
 
 interface SuratKeluarFormProps {
   onDone: (kodeTiket: string) => void
+  /** Buka tab Lacak dengan query tertentu (dipakai saat hasil submit tidak pasti) */
+  onLacak: (query: string) => void
 }
 
-export default function SuratKeluarForm({ onDone }: SuratKeluarFormProps) {
+export default function SuratKeluarForm({ onDone, onLacak }: SuratKeluarFormProps) {
   const [step, setStep] = useState<Step>(1)
   const [pemohon, setPemohon] = useState<PemohonState>(emptyPemohon)
   const [perihal, setPerihal] = useState('')
@@ -39,6 +41,7 @@ export default function SuratKeluarForm({ onDone }: SuratKeluarFormProps) {
   const [review, setReview] = useState<SuratKeluarRequest | null>(null)
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
+  const [uncertain, setUncertain] = useState(false)
 
   useEffect(() => { setPemohon(loadSavedPemohon()) }, [])
 
@@ -94,21 +97,28 @@ export default function SuratKeluarForm({ onDone }: SuratKeluarFormProps) {
     if (!review) return
     setSending(true)
     setSendError('')
+    let j: { success?: boolean; uncertain?: boolean; message?: string; kodeTiket?: string }
     try {
       const res = await fetch('/api/surat-keluar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'submit', data: review, website: honeypot }),
       })
-      const j = await res.json()
-      if (!j.success) throw new Error(j.message)
+      j = await res.json()
+    } catch {
+      // Putus di tengah jalan: server mungkin sudah menyimpan request
+      j = { success: false, uncertain: true, message: 'Koneksi terputus sebelum konfirmasi diterima. Request kamu mungkin sudah masuk — cek dulu di Lacak Status sebelum mengirim ulang.' }
+    }
+    setSending(false)
+
+    if (j.success && j.kodeTiket) {
       savePemohon(pemohon)
       onDone(j.kodeTiket)
-    } catch (err) {
-      setSendError(err instanceof Error && err.message ? err.message : 'Koneksi terputus. Coba kirim lagi.')
-    } finally {
-      setSending(false)
+      return
     }
+    if (j.uncertain) savePemohon(pemohon)
+    setUncertain(!!j.uncertain)
+    setSendError(j.message || 'Request gagal dikirim. Coba lagi.')
   }
 
   const setTandaAt = (i: number, patch: Partial<Penandatangan>) =>
@@ -298,8 +308,10 @@ export default function SuratKeluarForm({ onDone }: SuratKeluarFormProps) {
           pemohon={pemohon}
           sending={sending}
           error={sendError}
+          uncertain={uncertain}
           onClose={() => !sending && setReview(null)}
           onSubmit={submit}
+          onLacak={() => onLacak(pemohon.tipe === 'fungsio' ? pemohon.fungsioNama : pemohon.nama.trim())}
         />
       )}
     </div>

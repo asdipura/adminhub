@@ -3,6 +3,8 @@ import { GAS, GasError, callGas, getFungsio, jabatanLabel, normalizeWA } from '@
 import type { LacakResult, SuratKeluarRequest } from '@/types/surat'
 
 export const dynamic = 'force-dynamic'
+// Submit di GAS (buat folder, copy template, kirim email) bisa 20–30 detik
+export const maxDuration = 60
 
 type GasSubmitResult = { success: boolean; kodeTiket?: string; message?: string }
 type GasLacakResult = { success: boolean; results?: Record<string, unknown>[]; message?: string }
@@ -92,20 +94,55 @@ async function submit(d: SuratKeluarRequest | undefined, honeypot: unknown) {
     .filter((p) => p.jabatan || p.nama || p.nrp)
   const lampiran = (d.lampiran ?? []).slice(0, 20).map((l) => str(l, 500)).filter(Boolean)
 
-  // 3. Kirim ke GAS Surat Keluar (format sama seperti form GAS lama + nrp)
-  const res = await callGas<GasSubmitResult>(GAS.suratKeluar, {
-    action: 'submit',
-    nama, noWA, nrp, jabatan,
-    perihal,
-    tanggalDibutuhkan: tanggal,
-    tujuan, konteks, penandatangan, lampiran,
-  })
+  // 3. Snapshot tiket milik pemohon (dicari via nomor WA) — untuk pemulihan di langkah 4
+  const before = await ticketsOf(noWA)
+
+  // 4. Kirim ke GAS Surat Keluar (format sama seperti form GAS lama + nrp)
+  let res: GasSubmitResult
+  try {
+    res = await callGas<GasSubmitResult>(GAS.suratKeluar, {
+      action: 'submit',
+      nama, noWA, nrp, jabatan,
+      perihal,
+      tanggalDibutuhkan: tanggal,
+      tujuan, konteks, penandatangan, lampiran,
+    })
+  } catch (err) {
+    if (!(err instanceof GasError && err.processed)) throw err
+
+    // Script sudah jalan tapi balasannya tidak terbaca → cari tiket baru dengan perihal ini
+    const after = before ? await ticketsOf(noWA) : null
+    const known = new Set(before?.map((t) => t.kodeTiket))
+    const fresh = after?.filter((t) => !known.has(t.kodeTiket) && t.perihal === perihal)
+    if (fresh?.length === 1) {
+      console.warn('[api/surat-keluar] balasan GAS tidak terbaca, tiket dipulihkan:', fresh[0].kodeTiket)
+      return NextResponse.json({ success: true, kodeTiket: fresh[0].kodeTiket })
+    }
+    // Request mungkin sudah tersimpan — jangan dorong user kirim ulang (tiket ganda)
+    return NextResponse.json(
+      { success: false, uncertain: true, message: 'Request kemungkinan sudah masuk, tapi konfirmasinya tidak terbaca. Cek dulu di tab Lacak Status pakai nama kamu sebelum mengirim ulang.' },
+      { status: 502 },
+    )
+  }
 
   if (!res.success) {
     console.error('[api/surat-keluar] GAS submit gagal:', res.message)
     return fail('Request gagal disimpan. Coba lagi, atau hubungi sekretaris.', 502)
   }
   return NextResponse.json({ success: true, kodeTiket: res.kodeTiket })
+}
+
+type TicketRef = { kodeTiket: string; perihal: string }
+
+/** Semua tiket atas nomor WA ini. null kalau gagal dibaca (pemulihan dilewati). */
+async function ticketsOf(noWA: string): Promise<TicketRef[] | null> {
+  try {
+    const res = await callGas<GasLacakResult>(GAS.suratKeluar, { action: 'lacak', query: noWA })
+    if (!res.success) return null
+    return (res.results ?? []).map((r) => ({ kodeTiket: str(r.kodeTiket), perihal: str(r.perihal, 200) }))
+  } catch {
+    return null
+  }
 }
 
 // ── LACAK ────────────────────────────────────────────────────────────
