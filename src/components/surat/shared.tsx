@@ -1,4 +1,18 @@
-const BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+import { useEffect, useState } from 'react'
+
+/** Detik berlalu sejak `active` jadi true (0 saat tidak aktif). */
+export function useElapsed(active: boolean) {
+  const [sec, setSec] = useState(0)
+  useEffect(() => {
+    if (!active) { setSec(0); return }
+    const start = Date.now()
+    const id = setInterval(() => setSec(Math.floor((Date.now() - start) / 1000)), 1000)
+    return () => clearInterval(id)
+  }, [active])
+  return sec
+}
+
+const BULAN =['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 
 /** yyyy-mm-dd → "12 Okt 2026" */
 export function fmtTanggal(iso: string) {

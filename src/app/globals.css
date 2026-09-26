@@ -3968,3 +3968,15 @@ textarea.fm-input {
   .sk-skel { animation: none; }
   .sk-result:hover { transform: none; }
 }
+
+.sk-wait {
+  margin-top: 16px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(200, 215, 240, 0.06);
+  border: 1px solid rgba(200, 215, 240, 0.18);
+  color: var(--txt-2);
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}

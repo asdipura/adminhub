@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import FungsioPicker, { jabatanLabel } from './FungsioPicker'
 import type { FungsioPublic, Pemohon } from '@/types/pemohon'
+import { useElapsed } from '@/components/surat/shared'
 
 export type PemohonState = {
   tipe: 'fungsio' | 'warga'
@@ -19,6 +20,7 @@ export type PemohonState = {
 export type PemohonErrors = Partial<Record<'fungsio' | 'nama' | 'noWA' | 'nrp', string>>
 
 const STORAGE_KEY = 'himaide:pemohon'
+const LIST_KEY = 'himaide:fungsio-list' // WA sudah dimasking — aman disimpan di browser
 
 export const emptyPemohon: PemohonState = { tipe: 'fungsio', fungsioId: '', fungsioNama: '', fungsioJabatan: '', fungsioWA: '', nama: '', noWA: '62', nrp: '' }
 
@@ -74,12 +76,26 @@ export default function PemohonFields({ value, onChange, errors, onClearError }:
   const [list, setList] = useState<FungsioPublic[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string>()
+  const loadingSec = useElapsed(loading)
 
   useEffect(() => {
+    // Tampilkan daftar dari cache browser dulu (instan), lalu perbarui dari server
+    let cached: FungsioPublic[] = []
+    try { cached = JSON.parse(localStorage.getItem(LIST_KEY) || '[]') } catch { /* abaikan */ }
+    if (cached.length) { setList(cached); setLoading(false) }
+
     fetch('/api/fungsio')
       .then((r) => r.json())
-      .then((j) => { setList(j.data ?? []); if (j.error) setLoadError(j.error) })
-      .catch(() => setLoadError('Daftar fungsio belum bisa dimuat. Coba muat ulang halaman.'))
+      .then((j) => {
+        if (j.data?.length) {
+          setList(j.data)
+          setLoadError(undefined)
+          try { localStorage.setItem(LIST_KEY, JSON.stringify(j.data)) } catch { /* abaikan */ }
+        } else if (!cached.length) {
+          setLoadError(j.error || 'Daftar fungsio kosong.')
+        }
+      })
+      .catch(() => { if (!cached.length) setLoadError('Daftar fungsio belum bisa dimuat. Coba muat ulang halaman.') })
       .finally(() => setLoading(false))
   }, [])
 
@@ -122,7 +138,9 @@ export default function PemohonFields({ value, onChange, errors, onClearError }:
           />
           {errors.fungsio
             ? <span className="fm-err">{errors.fungsio}</span>
-            : <span className="fm-hint">Data diambil dari Kontrak Kerja. Konfirmasi dikirim ke nomor WA yang terdaftar.</span>}
+            : loading && loadingSec >= 5
+              ? <span className="fm-hint">Server sedang dibangunkan, biasanya &lt; 30 detik… Belum isi Kontrak Kerja? Pilih <b>Warga IDE</b>.</span>
+              : <span className="fm-hint">Data diambil dari Kontrak Kerja. Konfirmasi dikirim ke nomor WA yang terdaftar.</span>}
         </div>
       ) : (
         <>

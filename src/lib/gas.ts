@@ -25,16 +25,48 @@ export class GasError extends Error {
   }
 }
 
-export async function callGas<T = unknown>(target: GasTarget, body: Record<string, unknown>): Promise<T> {
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+/** Host + path tanpa query (query echo berisi user_content_key). */
+const where = (u: string | null) => {
+  if (!u) return null
+  try { const x = new URL(u); return x.host + x.pathname } catch { return u.slice(0, 80) }
+}
+
+/**
+ * @param opts.idempotent true untuk action yang aman diulang (lacak, list, get):
+ *   kalau balasan tidak terbaca, seluruh request (POST) diulang maks. 2x lagi.
+ *   JANGAN untuk submit — mengulang POST = tiket ganda.
+ */
+export async function callGas<T = unknown>(
+  target: GasTarget,
+  body: Record<string, unknown>,
+  opts: { idempotent?: boolean } = {},
+): Promise<T> {
   if (!target.url || !target.apiKey) {
     throw new GasError(`Endpoint ${target.name} belum dikonfigurasi di server`)
   }
 
-  // GAS menjalankan script lalu redirect (302) ke script.googleusercontent.com/macros/echo
-  // yang berisi hasilnya. Pada eksekusi lambat (cold start, submit ±20 dtk) URL echo
-  // kadang membalas 404 HTML. Redirect diikuti manual dengan GET supaya echo bisa
-  // di-retry tanpa mengulang POST (yang akan menjalankan script / submit lagi).
-  const post = await fetch(target.url, {
+  const tries = opts.idempotent ? 3 : 1
+  for (let i = 1; ; i++) {
+    try {
+      const out = await callGasOnce<T>(target, body)
+      if (i > 1) console.warn(`[gas:${target.name}] berhasil di percobaan POST ke-${i}`)
+      return out
+    } catch (err) {
+      if (!(err instanceof GasError) || i >= tries) throw err
+      await sleep(800 * i)
+    }
+  }
+}
+
+// GAS menjalankan doPost lalu redirect (302) ke script.googleusercontent.com/macros/echo
+// yang berisi hasilnya. Kadang URL echo tidak tersedia dan Google me-redirect balik ke
+// /exec (= halaman doGet HTML) atau 404. Karena itu semua redirect diikuti MANUAL:
+// echo di-GET ulang sebentar tanpa mengikuti redirect ke halaman lain, dan POST tidak
+// pernah diulang di sini (mengulang POST = menjalankan script lagi).
+async function callGasOnce<T>(target: GasTarget, body: Record<string, unknown>): Promise<T> {
+  const post = await fetch(target.url!, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...body, apiKey: target.apiKey }),
@@ -42,24 +74,31 @@ export async function callGas<T = unknown>(target: GasTarget, body: Record<strin
     redirect: 'manual',
   })
   const location = post.headers.get('location')
-  const processed = post.status >= 300 && post.status < 400 && !!location // script sudah dieksekusi
 
-  if (!processed) return parseGas<T>(target, post, await post.text(), false)
+  if (!(post.status >= 300 && post.status < 400 && location)) {
+    const text = await post.text()
+    if (isJson(text)) return JSON.parse(text) as T
+    return fail(target, { step: 'post', status: post.status, text }, false)
+  }
 
-  const echoUrl = new URL(location!, target.url)
-  const delays = [0, 1500, 3000, 5000]
-  let last: { res: Response; text: string } | undefined
-  for (const [attempt, delay] of delays.entries()) {
-    if (delay) await new Promise((r) => setTimeout(r, delay))
-    const res = await fetch(echoUrl, { cache: 'no-store' })
+  const echoUrl = new URL(location, target.url)
+  // doPost sudah dieksekusi hanya kalau diarahkan ke URL echo googleusercontent
+  const processed = echoUrl.host.endsWith('googleusercontent.com')
+  const trail: string[] = []
+
+  for (const delay of [0, 700, 1500, 2500]) {
+    if (delay) await sleep(delay)
+    const res = await fetch(echoUrl, { cache: 'no-store', redirect: 'manual' })
     const text = await res.text()
-    if (isJson(text)) {
-      if (attempt > 0) console.warn(`[gas:${target.name}] echo baru terbaca di percobaan ke-${attempt + 1}`)
+    if (res.ok && isJson(text)) {
+      if (trail.length) console.warn(`[gas:${target.name}] echo terbaca setelah ${trail.length} kali gagal`, trail)
       return JSON.parse(text) as T
     }
-    last = { res, text }
+    trail.push(`${res.status}${res.headers.get('location') ? ' → ' + where(res.headers.get('location')) : ''}`)
+    if (!processed) break // bukan URL echo: tidak ada gunanya diulang
   }
-  return parseGas<T>(target, last!.res, last!.text, true)
+
+  return fail(target, { step: 'echo', postStatus: post.status, location: where(location), trail }, processed)
 }
 
 function isJson(text: string) {
@@ -68,13 +107,11 @@ function isJson(text: string) {
   try { JSON.parse(t); return true } catch { return false }
 }
 
-function parseGas<T>(target: GasTarget, res: Response, text: string, processed: boolean): T {
-  if (isJson(text)) return JSON.parse(text) as T
-  console.error(`[gas:${target.name}] non-JSON response`, {
-    status: res.status,
-    host: res.url ? new URL(res.url).host : '',
-    title: text.match(/<title>([^<]*)/i)?.[1] ?? '',
-    head: text.slice(0, 160),
+function fail(target: GasTarget, info: Record<string, unknown> & { text?: string }, processed: boolean): never {
+  const { text, ...rest } = info
+  console.error(`[gas:${target.name}] balasan tidak terbaca`, {
+    ...rest,
+    ...(text !== undefined && { title: text.match(/<title>([^<]*)/i)?.[1] ?? '', head: text.slice(0, 120) }),
   })
   throw new GasError(`${target.name} tidak mengembalikan respons yang valid`, processed)
 }
@@ -84,14 +121,14 @@ function parseGas<T>(target: GasTarget, res: Response, text: string, processed: 
 type GasResult<T> = { success: boolean; data?: T; message?: string }
 
 export async function listFungsio(): Promise<FungsioPublic[]> {
-  const res = await callGas<GasResult<FungsioPublic[]>>(GAS.kontrak, { action: 'listFungsio' })
+  const res = await callGas<GasResult<FungsioPublic[]>>(GAS.kontrak, { action: 'listFungsio' }, { idempotent: true })
   if (!res.success) throw new GasError(res.message || 'Gagal memuat daftar fungsio')
   return res.data ?? []
 }
 
 /** Data lengkap (termasuk WA asli) — hanya untuk dipakai di server. */
 export async function getFungsio(id: string): Promise<Fungsio | null> {
-  const res = await callGas<GasResult<Fungsio>>(GAS.kontrak, { action: 'getFungsio', id })
+  const res = await callGas<GasResult<Fungsio>>(GAS.kontrak, { action: 'getFungsio', id }, { idempotent: true })
   return res.success && res.data ? res.data : null
 }
 

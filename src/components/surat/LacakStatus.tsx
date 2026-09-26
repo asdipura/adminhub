@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { LacakResult, Penandatangan, Tujuan } from '@/types/surat'
-import { MiniTable, SafeLink } from './shared'
+import { MiniTable, SafeLink, useElapsed } from './shared'
 import { actions } from '@/config/actions'
 import { toWaLink } from '@/lib/whatsapp'
 
@@ -35,6 +35,7 @@ export default function LacakStatus({ initialQuery = '' }: LacakStatusProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [detail, setDetail] = useState<LacakResult | null>(null)
+  const elapsed = useElapsed(loading)
 
   async function search(q = query) {
     const s = q.trim()
@@ -80,6 +81,10 @@ export default function LacakStatus({ initialQuery = '' }: LacakStatusProps) {
       </form>
 
       {error && <div className="sk-alert" role="alert">{error}</div>}
+
+      {loading && elapsed >= 4 && (
+        <div className="sk-wait" role="status">Server surat sedang lambat merespons, tunggu sebentar… ({elapsed} dtk)</div>
+      )}
 
       {loading && !results && (
         <div className="sk-results" aria-busy="true">

@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import type { PemohonState } from '@/components/forms/PemohonFields'
 import type { SuratKeluarRequest } from '@/types/surat'
-import { fmtTanggal, MiniTable, SafeLink } from './shared'
+import { fmtTanggal, MiniTable, SafeLink, useElapsed } from './shared'
 
 interface ReviewModalProps {
   data: SuratKeluarRequest
@@ -25,6 +25,7 @@ export default function ReviewModal({ data, pemohon, sending, error, uncertain, 
   }, [onClose])
 
   const isFungsio = pemohon.tipe === 'fungsio'
+  const elapsed = useElapsed(sending)
 
   return (
     <div className="backdrop open" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -72,6 +73,12 @@ export default function ReviewModal({ data, pemohon, sending, error, uncertain, 
             </>
           )}
 
+          {sending && elapsed >= 4 && (
+            <div className="sk-wait" role="status">
+              Sedang membuat draft surat &amp; folder di Google Drive — biasanya 15–30 detik
+              {elapsed >= 30 && ', kali ini agak lama'}. Jangan tutup halaman ini. ({elapsed} dtk)
+            </div>
+          )}
           {error && <div className="sk-alert" role="alert">{error}</div>}
         </div>
 
