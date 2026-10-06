@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import ShortcutSection from './ShortcutSection'
+import KomitmenCard from './KomitmenCard'
 import WeekCalendar from '@/components/calendar/WeekCalendar'
 import InfoCard from '@/components/cards/InfoCard'
 import CardModal from '@/components/cards/CardModal'
@@ -41,6 +42,9 @@ export default function MainContentSection() {
 
   return (
     <div className="main">
+      {/* KOMITMEN IURAN — hilang sendiri setelah jendela pengisian lewat */}
+      <KomitmenCard />
+
       {/* SHORTCUTS */}
       <ShortcutSection onOpenModal={handleOpenModal} />
 

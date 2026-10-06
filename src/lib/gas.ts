@@ -16,6 +16,11 @@ export const GAS = {
     url: process.env.SURAT_KELUAR_GAS_URL,
     apiKey: process.env.SURAT_KELUAR_API_KEY,
   },
+  komitmen: {
+    name: 'Komitmen Iuran',
+    url: process.env.KOMITMEN_GAS_URL,
+    apiKey: process.env.KOMITMEN_API_KEY,
+  },
 } satisfies Record<string, GasTarget>
 
 export class GasError extends Error {
