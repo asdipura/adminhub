@@ -4,7 +4,7 @@ import { links } from '@/config/links'
 export const PROKER: CardData[] = [
   {
     id: 'proposal',
-    emoji: '📄',
+    icon: 'description',
     title: 'Proposal',
     desc: 'Template, format, dan ketentuan pengajuan proposal kegiatan ke Departemen.',
     tl: 'H-60 ~ H-20',
@@ -32,7 +32,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'suratkeluar',
-    emoji: '📮',
+    icon: 'outgoing_mail',
     title: 'Surat Keluar',
     desc: 'Alur pengajuan surat resmi untuk undangan, keramaian, kerja sama, dan kebutuhan administrasi lainnya.',
     tl: 'H-60 ~ H-10',
@@ -54,7 +54,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'ruang',
-    emoji: '🚪',
+    icon: 'meeting_room',
     title: 'Peminjaman Ruang',
     desc: 'Alur dan preview formulir peminjaman ruang untuk kegiatan HIMAIDE.',
     tl: 'H-30 ~ H-10',
@@ -72,7 +72,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'konsumsi',
-    emoji: '🍱',
+    icon: 'restaurant',
     title: 'Pengajuan Konsumsi',
     desc: 'Alur, ketentuan, dan format pengajuan konsumsi melalui myITS Food untuk kegiatan.',
     tl: 'H-30 ~ H-10',
@@ -105,7 +105,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'merch',
-    emoji: '👕',
+    icon: 'apparel',
     title: 'Pengajuan Merch / Souvenir',
     desc: 'Alur, ketentuan, dan format pengajuan merchandise dari katalog myITS Merch.',
     tl: 'H-30 ~ H-10',
@@ -125,7 +125,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'sertifikat',
-    emoji: '🏅',
+    icon: 'workspace_premium',
     title: 'Sertifikat Kegiatan',
     desc: 'Alur pengajuan nomor sertifikat dan request desain ke Sekretaris atau CIMD.',
     tl: 'H-30 ~ H-10',
@@ -144,7 +144,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'dana',
-    emoji: '💰',
+    icon: 'payments',
     title: 'Pengajuan Dana',
     desc: 'Alur pengajuan dana kegiatan ke Departemen beserta ketentuan dokumen pendukung.',
     tl: 'H-60 ~ H-30',
@@ -163,7 +163,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'requestdesign',
-    emoji: '🎨',
+    icon: 'palette',
     title: 'Request Desain',
     desc: 'Ajukan desain/video yang dibutuhkan pada proker mu ke Dept.CIMD',
     tl: 'Sesuai Kebutuhan',
@@ -185,7 +185,7 @@ export const PROKER: CardData[] = [
   },
   {
     id: 'lpj',
-    emoji: '📊',
+    icon: 'receipt_long',
     title: 'LPJ & SPJ',
     desc: 'Format, ketentuan, dan timeline pengumpulan Laporan Pertanggungjawaban dan Surat Pertanggungjawaban.',
     tl: 'H+3 ~ H+6',
@@ -210,7 +210,7 @@ export const PROKER: CardData[] = [
 export const FUNGSIO: CardData[] = [
   {
     id: 'suratmasuk',
-    emoji: '📬',
+    icon: 'move_to_inbox',
     title: 'Surat Masuk',
     desc: 'Jalur penerimaan surat masuk secara online maupun offline melalui Sekretaris.',
     tl: 'Secepatnya',
@@ -226,7 +226,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'suratkeluarf',
-    emoji: '📮',
+    icon: 'outgoing_mail',
     title: 'Surat Keluar',
     desc: 'Ajukan surat keluar sesuai kebutuhan administrasi kegiatan melalui link pengajuan resmi.',
     tl: 'Sesuai Kebutuhan',
@@ -237,7 +237,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'Notulensi',
-    emoji: '📝',
+    icon: 'edit_note',
     title: 'Notulensi Meeting (MoM)',
     desc: 'Akses template dan arsip notulensi.',
     tl: 'Sesuai Kebutuhan',
@@ -248,7 +248,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'zoom',
-    emoji: '🎥',
+    icon: 'videocam',
     title: 'Zoom HIMAIDE',
     desc: 'Booking akun Zoom — kapasitas 300 peserta, gratis, untuk kegiatan internal dan Despro ITS.',
     tl: 'Min. H-3',
@@ -269,7 +269,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'sekretariat',
-    emoji: '🏠',
+    icon: 'door_front',
     title: 'Ruang Sekretariat',
     desc: 'Ketentuan penggunaan ruang sekretariat HIMAIDE beserta SOP setelah penggunaan.',
     tl: 'Konfirmasi ke Sekretaris',
@@ -293,7 +293,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'ruangdept',
-    emoji: '🏢',
+    icon: 'apartment',
     title: 'Peminjaman Ruang Departemen',
     desc: 'Alur peminjaman ruang Departemen Desain Produk ITS melalui TU Despro.',
     tl: 'Sesuai Kebutuhan',
@@ -310,7 +310,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'saku',
-    emoji: '💳',
+    icon: 'account_balance_wallet',
     title: 'Dana Kas & SAKU IDE',
     desc: 'Informasi peminjaman kas HIMA dan iuran anggota SAKU IDE beserta ketentuan denda.',
     tl: 'Batas SAKU: Nov 2025',
@@ -338,7 +338,7 @@ export const FUNGSIO: CardData[] = [
   },
   {
     id: 'kontak',
-    emoji: '📞',
+    icon: 'contacts',
     title: 'Kontak Pengurus',
     desc: 'Daftar kontak BPH dan pengurus HIMAIDE yang dapat dihubungi untuk kebutuhan administrasi.',
     tl: 'Kapan saja',
@@ -364,10 +364,34 @@ export const FUNGSIO: CardData[] = [
 
 export const ALL_CARDS: CardData[] = [...PROKER, ...FUNGSIO]
 
-export const SHORTCUTS = [
-  { emoji: '📄', label: 'Proposal', id: 'proposal' },
-  { emoji: '📊', label: 'LPJ & SPJ', id: 'lpj' },
-  { emoji: '🏅', label: 'Sertifikat', id: 'sertifikat' },
-  { emoji: '📮', label: 'Surat Keluar', id: 'suratkeluar' },
-  { emoji: '📝', label: 'Notulensi', id: 'Notulensi' },
-]
+// Susunan menu beranda. `label` menimpa judul kartu agar tile tetap ringkas.
+export type MenuItem = { id: string; label?: string }
+
+export const MENU = {
+  utama: [
+    { id: 'suratkeluar', label: 'Request Surat' },
+    { id: 'sertifikat', label: 'Sertifikat' },
+  ],
+  utamaKecil: [
+    { id: 'zoom', label: 'Zoom' },
+    { id: 'Notulensi', label: 'Notulensi' },
+  ],
+  dokumen: [
+    { id: 'proposal' },
+    { id: 'lpj' },
+  ],
+  qna: [
+    { id: 'ruang' },
+    { id: 'konsumsi' },
+    { id: 'merch' },
+  ],
+  desain: [
+    { id: 'requestdesign' },
+  ],
+  sekretariat: [
+    { id: 'saku' },
+    { id: 'ruangdept' },
+    { id: 'suratmasuk' },
+    { id: 'suratkeluarf' },
+  ],
+} satisfies Record<string, MenuItem[]>

@@ -46,7 +46,7 @@ export default function CardModal({ card, onClose }: CardModalProps) {
     >
       <div className="modal">
         <div className="modal-head">
-          <div className="m-emoji">{card.emoji}</div>
+          <div className="msr m-ico" aria-hidden="true">{card.icon}</div>
           <div className="m-titles">
             <div className="m-title">{card.title}</div>
             <div className="m-tl">⏱ {card.tl}</div>

@@ -1,93 +1,102 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import ShortcutSection from './ShortcutSection'
 import KomitmenCard from './KomitmenCard'
 import WeekCalendar from '@/components/calendar/WeekCalendar'
-import InfoCard from '@/components/cards/InfoCard'
+import MenuTile from '@/components/cards/MenuTile'
 import CardModal from '@/components/cards/CardModal'
-import { PROKER, FUNGSIO, ALL_CARDS } from '@/config/cards'
+import { ALL_CARDS, MENU, type MenuItem } from '@/config/cards'
 import type { CardData } from '@/types/config'
 
+function findCard(id: string) {
+  return ALL_CARDS.find((c) => c.id === id) || null
+}
+
 export default function MainContentSection() {
-  const [activeTab, setActiveTab] = useState<'proker' | 'fungsio'>('proker')
   const [openCard, setOpenCard] = useState<CardData | null>(null)
 
   function handleOpenModal(id: string) {
-    const card = ALL_CARDS.find((c) => c.id === id) || null
-    setOpenCard(card)
+    setOpenCard(findCard(id))
   }
 
   function handleCloseModal() {
     setOpenCard(null)
   }
 
-  function switchTab(tab: 'proker' | 'fungsio') {
-    setActiveTab(tab)
-  }
-
   // Listen for footer "Lembaran Proker" link clicks
   useEffect(() => {
-    const prokerIds = ['proposal', 'suratkeluar', 'ruang', 'konsumsi', 'merch', 'sertifikat', 'dana', 'requestdesign', 'lpj']
     function onOpenCardEvent(e: Event) {
-      const id = (e as CustomEvent<string>).detail
-      if (prokerIds.includes(id)) setActiveTab('proker')
-      handleOpenModal(id)
+      handleOpenModal((e as CustomEvent<string>).detail)
     }
     window.addEventListener('himaide:opencard', onOpenCardEvent)
     return () => window.removeEventListener('himaide:opencard', onOpenCardEvent)
   }, [])
 
-  const cards = activeTab === 'proker' ? PROKER : FUNGSIO
+  // Urutan animasi berlanjut antar grup supaya tile muncul berurutan dari atas
+  let order = 0
+  function tiles(items: MenuItem[], compactLast = false) {
+    return items.map((item, i) => {
+      const card = findCard(item.id)
+      if (!card) return null
+      return (
+        <MenuTile
+          key={item.id}
+          card={card}
+          label={item.label}
+          index={order++}
+          compact={compactLast && i === items.length - 1}
+          onOpen={handleOpenModal}
+        />
+      )
+    })
+  }
 
   return (
     <div className="main">
       {/* KOMITMEN IURAN — hilang sendiri setelah jendela pengisian lewat */}
       <KomitmenCard />
 
-      {/* SHORTCUTS */}
-      <ShortcutSection onOpenModal={handleOpenModal} />
-
       {/* WEEK CALENDAR */}
       <WeekCalendar />
 
-      {/* SEGMENTED TABS */}
-      <div className="seg">
-        <div className="seg-ctrl">
-          <button
-            className={`seg-btn${activeTab === 'proker' ? ' on' : ''}`}
-            onClick={() => switchTab('proker')}
-          >
-            📋 Proker / Kegiatan
-          </button>
-          <button
-            className={`seg-btn${activeTab === 'fungsio' ? ' on' : ''}`}
-            onClick={() => switchTab('fungsio')}
-          >
-            🏠 Fungsionaris
-          </button>
-        </div>
-      </div>
+      {/* MENU UTAMA */}
+      <section className="menu-group">
+        <div className="tile-grid">{tiles(MENU.utama)}</div>
+        <div className="tile-grid tile-grid--8020">{tiles(MENU.utamaKecil, true)}</div>
+      </section>
 
-      {/* PROKER PANEL */}
-      <div id="seg-proker" className={`seg-panel${activeTab === 'proker' ? ' on' : ''}`}>
-        <p className="section-eyebrow">Administrasi Kegiatan</p>
-        <div className="card-list">
-          {PROKER.map((card, i) => (
-            <InfoCard key={card.id} card={card} index={i} onOpen={handleOpenModal} />
-          ))}
-        </div>
-      </div>
+      <section className="menu-group">
+        <p className="section-eyebrow">Dokumen Proker</p>
+        <div className="tile-grid">{tiles(MENU.dokumen)}</div>
+      </section>
 
-      {/* FUNGSIO PANEL */}
-      <div id="seg-fungsio" className={`seg-panel${activeTab === 'fungsio' ? ' on' : ''}`}>
-        <p className="section-eyebrow">Layanan Fungsionaris</p>
-        <div className="card-list">
-          {FUNGSIO.map((card, i) => (
-            <InfoCard key={card.id} card={card} index={i} onOpen={handleOpenModal} />
-          ))}
+      <section className="menu-group">
+        <p className="section-eyebrow">QnA Proker</p>
+        <div className="qna-list">
+          {(MENU.qna as MenuItem[]).map((item) => {
+            const card = findCard(item.id)
+            if (!card) return null
+            return (
+              <button key={item.id} type="button" className="qna-row" onClick={() => handleOpenModal(item.id)}>
+                <span className="msr qna-ico" aria-hidden="true">{card.icon}</span>
+                <span className="qna-title">{item.label ?? card.title}</span>
+                <span className="qna-tl">{card.tl}</span>
+                <span className="qna-chev" aria-hidden="true">›</span>
+              </button>
+            )
+          })}
         </div>
-      </div>
+      </section>
+
+      <section className="menu-group">
+        <p className="section-eyebrow">Desain & Konten</p>
+        <div className="tile-grid tile-grid--1">{tiles(MENU.desain)}</div>
+      </section>
+
+      <section className="menu-group">
+        <p className="section-eyebrow">Sekretariat</p>
+        <div className="tile-grid tile-grid--4">{tiles(MENU.sekretariat)}</div>
+      </section>
 
       {/* MODAL */}
       <CardModal card={openCard} onClose={handleCloseModal} />

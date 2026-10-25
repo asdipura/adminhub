@@ -25,7 +25,7 @@ export type CardButton = {
 
 export type CardData = {
   id: string
-  emoji: string
+  icon: string // nama Material Symbols Rounded; tambahkan juga ke MATERIAL_ICONS di layout.tsx
   title: string
   desc: string
   tl: string

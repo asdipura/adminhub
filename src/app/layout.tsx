@@ -64,6 +64,13 @@ export const viewport: Viewport = {
   colorScheme: 'dark',
 }
 
+// Font ikon di-subset lewat icon_names (wajib urut abjad) supaya unduhan kecil
+const MATERIAL_ICONS = [
+  'account_balance_wallet', 'apartment', 'apparel', 'contacts', 'description', 'door_front',
+  'edit_note', 'meeting_room', 'move_to_inbox', 'outgoing_mail', 'palette', 'payments',
+  'receipt_long', 'restaurant', 'videocam', 'workspace_premium',
+].sort().join(',')
+
 export default function RootLayout({
   children,
 }: {
@@ -83,6 +90,10 @@ export default function RootLayout({
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href={`https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300,0,0&icon_names=${MATERIAL_ICONS}&display=block`}
           rel="stylesheet"
         />
       </head>
