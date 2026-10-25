@@ -1,7 +1,7 @@
 'use client'
 
 interface AboutPageProps {
-  onNavigate: (page: 'home' | 'kontak') => void
+  onNavigate: (page: 'home') => void
 }
 
 const LOGO_FOR_LAMBANG = (
@@ -359,13 +359,6 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
               onClick={(e) => { e.preventDefault(); onNavigate('home') }}
             >
               &larr; Kembali ke Home
-            </a>
-            <a
-              href="#"
-              className="about-cta-secondary"
-              onClick={(e) => { e.preventDefault(); onNavigate('kontak') }}
-            >
-              Hubungi Kami
             </a>
           </div>
         </div>

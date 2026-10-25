@@ -17,6 +17,7 @@ Built with **Next.js 15 + TypeScript** — deployable on Vercel free tier.
 - [Menjalankan Lokal](#menjalankan-lokal)
 - [Environment Variables](#environment-variables)
 - [Google Calendar via GAS](#google-calendar-via-gas)
+- [Sistem Form (Surat Keluar, Sertifikat, Zoom, Komitmen)](#sistem-form-surat-keluar-sertifikat-zoom-komitmen)
 - [Panduan Edit Konten](#panduan-edit-konten)
 - [SEO & Social Preview](#seo--social-preview)
 - [Deploy ke Vercel](#deploy-ke-vercel)
@@ -162,6 +163,32 @@ function doGet() {
 
 ---
 
+## Sistem Form (Surat Keluar, Sertifikat, Zoom, Komitmen)
+
+Form di `/surat-keluar`, `/sertif`, `/zoom`, dan `/komitmen` dibangun ulang di adminhub, tapi datanya tetap di spreadsheet masing-masing. Browser hanya memanggil `/api/*`; server Next.js yang memanggil `doPost` GAS dengan API key (`src/lib/gas.ts`), jadi API key tidak pernah sampai ke browser.
+
+```
+Form → /api/<sistem> → doPost GAS (apiKey) → Google Sheets / Drive / Gmail
+```
+
+| Halaman | API route | Env | Kunci di sheet config GAS |
+|---|---|---|---|
+| `/surat-keluar` | `api/surat-keluar` | `SURAT_KELUAR_GAS_URL`, `SURAT_KELUAR_API_KEY` | `apiKey` |
+| `/sertif` | `api/sertif` | `SERTIF_GAS_URL`, `SERTIF_API_KEY` | `apiKey` (sheet ⚙️ Config) |
+| `/zoom` | `api/zoom` | `ZOOM_GAS_URL`, `ZOOM_API_KEY` | `API_KEY` (sheet CONFIG) |
+| `/komitmen` | `api/komitmen` | `KOMITMEN_GAS_URL`, `KOMITMEN_API_KEY` | `API_KEY` |
+
+Daftar fungsio untuk pilihan pemohon diambil dari GAS Kontrak Kerja (`KONTRAK_GAS_URL`, `KONTRAK_API_KEY`).
+
+### Menyambungkan GAS baru
+
+1. Paste `code.gs` terbaru (yang sudah berisi `doPost`) ke project Apps Script-nya.
+2. Tambah baris API key di sheet config (lihat tabel), isi dengan string acak yang panjang.
+3. **Deploy → Manage deployments → Edit → New version** (Execute as: Me, Who has access: Anyone). URL `/exec` tetap sama.
+4. Isi URL `/exec` dan API key di `.env.local` dan Vercel Environment Variables, lalu redeploy Vercel.
+
+---
+
 ## Panduan Edit Konten
 
 Semua konten yang bisa diedit ada di `src/config/`. **Tidak perlu menyentuh komponen atau CSS.**
@@ -173,6 +200,8 @@ Semua konten yang bisa diedit ada di `src/config/`. **Tidak perlu menyentuh komp
 | Data kontak pengurus (nama, WA, jabatan) | `src/config/contacts.ts` |
 | Card & modal Proker/Fungsio (isi, tombol, format copy) | `src/config/cards.ts` |
 | Link sistem (Surat Keluar, Zoom, Notulensi, dll) | `src/config/links.ts` |
+| Sertifikat: daftar departemen CIMD, isi awal tanda tangan | `src/config/sertif.ts` |
+| Zoom: pilihan durasi, syarat & ketentuan | `src/config/zoom.ts` |
 | Dokumen organisasi (AD/ART, GBHO, TKO) | `src/config/documents.ts` |
 | Social media (Instagram, YouTube, LinkedIn, X) | `src/config/socials.ts` |
 | Lokasi (Ruang Sekretariat, ITS Merch) | `src/config/locations.ts` |
@@ -240,13 +269,16 @@ Panduan untuk pengurus baru yang mengambil alih project di periode kabinet berik
 - Jika akun Google berubah, buat GAS deployment baru
 - Update `GOOGLE_CALENDAR_GAS_ENDPOINT` di `.env.local` dan Vercel
 
-**5. Asset visual** (jika perlu) → `public/assets/`
+**5. Tanda tangan sertifikat** → `src/config/sertif.ts`
+- Update `STRUKTURAL_DEFAULT` (kepala departemen & ketua himpunan)
+
+**6. Asset visual** (jika perlu) → `public/assets/`
 - `og-image.jpg` — ganti jika branding berubah
 - `favicon.svg` — ganti jika logo berubah
 - `logos/himaide-logo.svg` — ganti jika logo berubah
 - `adminhub-wordmark.svg` — ganti jika wordmark berubah
 
-**6. Konten card/modal** → `src/config/cards.ts`
+**7. Konten card/modal** → `src/config/cards.ts`
 - Update link template, contoh, dan sistem yang berubah
 - Update format copy konsumsi/merch jika ada perubahan SOP
 

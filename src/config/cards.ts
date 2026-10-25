@@ -139,7 +139,7 @@ export const PROKER: CardData[] = [
       </div>
       <div class="info-box">Desain dapat diajukan ke CIMD langsung dari halaman sertifikat, atau kamu juga bisa mendesain sendiri.</div>`,
     btns: [
-      { label: '📨 Req No. Sertifikat', cls: 'mf-primary', url: 'https://its.id/m/himaide_sertif' },
+      { label: '📨 Req No. Sertifikat', cls: 'mf-primary', url: links.sistemSertifikat },
     ],
   },
   {
@@ -264,7 +264,7 @@ export const FUNGSIO: CardData[] = [
       <ol><li>Fungsio HIMAIDE</li><li>Anggota HIMAIDE (Warga)</li></ol>
       <div class="warn-box"><span class="wi">🚪</span> Pastikan logout dari akun setelah selesai digunakan.</div>`,
     btns: [
-      { label: '📅 Booking Zoom', cls: 'mf-primary', url: 'https://its.id/m/himaide_zoom' },
+      { label: '📅 Booking Zoom', cls: 'mf-primary', url: links.sistemZoom },
     ],
   },
   {

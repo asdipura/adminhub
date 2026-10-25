@@ -1,8 +1,8 @@
 export const links = {
   // Sistem links — found in HTML footer
   sistemSuratKeluar: '/surat-keluar', // form internal adminhub (GAS lama: https://its.id/m/himaide_suratkeluar)
-  sistemSertifikat: 'https://its.id/m/himaide_sertif',
-  sistemZoom: 'https://its.id/m/himaide_zoom',
+  sistemSertifikat: '/sertif', // form internal adminhub (GAS lama: https://its.id/m/himaide_sertif)
+  sistemZoom: '/zoom', // form internal adminhub (GAS lama: https://its.id/m/himaide_zoom)
   sistemNotulensi: 'https://its.id/m/himaide_notula',
 
   // Document links
@@ -22,7 +22,7 @@ export const links = {
   // Other systems
   previewFormPeminjamanRuang: '', // TODO: add link
   previewFormPeminjamanRuangDepartemen: 'https://docs.google.com/document/d/1wc30w9XxVsDui0TyYGuYuwoHCN_Bay3iZV6cSgN1pnU/preview', // TODO: add link
-  sistemNomorSertifikat: 'https://its.id/m/himaide_sertif', // TODO: add link (same as sistemSertifikat?)
+  sistemNomorSertifikat: '/sertif',
   bayarKas: 'https://its.id/m/himaide_kas', // TODO: add link
 
   // Pengajuan

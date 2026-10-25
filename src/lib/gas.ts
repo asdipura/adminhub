@@ -21,6 +21,16 @@ export const GAS = {
     url: process.env.KOMITMEN_GAS_URL,
     apiKey: process.env.KOMITMEN_API_KEY,
   },
+  sertif: {
+    name: 'Sertifikat',
+    url: process.env.SERTIF_GAS_URL,
+    apiKey: process.env.SERTIF_API_KEY,
+  },
+  zoom: {
+    name: 'Zoom',
+    url: process.env.ZOOM_GAS_URL,
+    apiKey: process.env.ZOOM_API_KEY,
+  },
 } satisfies Record<string, GasTarget>
 
 export class GasError extends Error {

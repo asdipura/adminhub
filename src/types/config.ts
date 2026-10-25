@@ -1,4 +1,5 @@
-export type PageId = 'home' | 'about' | 'kontak'
+// Halaman Kontak disembunyikan; komponennya masih ada di sections/ContactPage.tsx
+export type PageId = 'home' | 'about'
 
 export type NavItem = {
   label: string

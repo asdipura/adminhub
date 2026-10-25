@@ -46,13 +46,13 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={links.sistemSertifikat || '#'} target="_blank" rel="noopener">
-                  Sertifikat<span className="x">↗</span>
+                <a href={links.sistemSertifikat || '#'} {...extProps(links.sistemSertifikat)}>
+                  Sertifikat{links.sistemSertifikat.startsWith('http') && <span className="x">↗</span>}
                 </a>
               </li>
               <li>
-                <a href={links.sistemZoom || '#'} target="_blank" rel="noopener">
-                  Zoom<span className="x">↗</span>
+                <a href={links.sistemZoom || '#'} {...extProps(links.sistemZoom)}>
+                  Zoom{links.sistemZoom.startsWith('http') && <span className="x">↗</span>}
                 </a>
               </li>
               <li>

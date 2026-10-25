@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { GAS, GasError, callGas, getFungsio, jabatanLabel, normalizeWA } from '@/lib/gas'
+import { GAS, GasError, callGas } from '@/lib/gas'
+import { resolvePemohon } from '@/lib/pemohon'
 import type { LacakResult, SuratKeluarRequest } from '@/types/surat'
 
 export const dynamic = 'force-dynamic'
@@ -43,26 +44,9 @@ async function submit(d: SuratKeluarRequest | undefined, honeypot: unknown) {
   if (honeypot) return NextResponse.json({ success: true, kodeTiket: 'SR-OK' })
 
   // 1. Resolve identitas pemohon di server
-  let nama: string, noWA: string, nrp: string, jabatan: string
-  if (d.pemohon?.tipe === 'fungsio') {
-    const f = await getFungsio(str(d.pemohon.id, 40))
-    if (!f) return fail('Data fungsio tidak ditemukan. Pilih ulang nama kamu.')
-    nama = f.nama
-    noWA = normalizeWA(f.wa)
-    nrp = f.nrp
-    jabatan = jabatanLabel(f)
-  } else if (d.pemohon?.tipe === 'warga') {
-    nama = str(d.pemohon.nama, 120)
-    noWA = normalizeWA(d.pemohon.noWA)
-    nrp = str(d.pemohon.nrp, 20).replace(/\D/g, '')
-    jabatan = 'Warga IDE'
-  } else {
-    return fail('Pilih tipe pemohon (Fungsio / Warga)')
-  }
-
-  if (!nama) return fail('Nama pemohon kosong')
-  if (!/^62\d{8,13}$/.test(noWA)) return fail('Nomor WhatsApp pemohon tidak valid')
-  if (d.pemohon.tipe === 'warga' && !/^\d{10,14}$/.test(nrp)) return fail('NRP harus 10–14 digit angka')
+  const who = await resolvePemohon(d.pemohon)
+  if (typeof who === 'string') return fail(who)
+  const { nama, noWA, nrp, jabatan } = who
 
   // 2. Validasi isi surat
   const perihal = str(d.perihal, 200)

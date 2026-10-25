@@ -54,12 +54,6 @@ export default function Navbar({ activePage, setActivePage }: NavbarProps) {
         <a className="nav-link" href={documents.tko || '#'} target={documents.tko ? '_blank' : undefined} rel="noopener">
           TKO ↗
         </a>
-        <button
-          className={`nav-link${activePage === 'kontak' ? ' active' : ''}`}
-          onClick={() => handleNav('kontak')}
-        >
-          Kontak
-        </button>
       </div>
 
       {/* Burger (mobile) */}
@@ -100,15 +94,6 @@ export default function Navbar({ activePage, setActivePage }: NavbarProps) {
           <span aria-hidden="true" style={{ marginRight: '10px', fontSize: '16px', opacity: 0.6 }}>📋</span>
           TKO ↗
         </a>
-        <div className="mobile-sep" />
-        <button
-          className="mobile-link"
-          role="menuitem"
-          onClick={() => handleNav('kontak')}
-        >
-          <span aria-hidden="true" style={{ marginRight: '10px', fontSize: '16px', opacity: 0.6 }}>📞</span>
-          Kontak
-        </button>
       </div>
     </nav>
   )
