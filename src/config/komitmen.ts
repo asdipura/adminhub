@@ -6,7 +6,8 @@ export const KOMITMEN = {
   kegiatan: 'Studi Ekskursi × Internalisasi HIMA IDE 2026',
   /** Waktu dibuka (WIB) */
   mulai: '2026-10-06T00:00:00+07:00',
-  durasiHari: 14,
+  /** Diperpanjang: hari terakhir 6 November 2026 */
+  durasiHari: 32,
 }
 
 const DAY = 86_400_000
